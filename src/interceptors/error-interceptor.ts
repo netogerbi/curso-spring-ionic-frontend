@@ -6,6 +6,7 @@ import { Injectable } from "@angular/core";
 export class  ErrorInterceptor implements HttpInterceptor{
     
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+        
         return next.handle(req).catch((err,cautch)=>{
             
             let errorObj = err;
