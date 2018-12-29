@@ -15,7 +15,7 @@ export class ProfilePage {
   cliente: ClienteDTO;
 
   constructor(
-    public navCtrl: NavController, 
+    public navCtrl: NavController,
     public navParams: NavParams,
     public storage: StorageService,
     public clienteService: ClienteService) {
@@ -30,7 +30,11 @@ export class ProfilePage {
           //procura imagem no bucket
           this.getImageIfExists();
         },
-        error=>{});
+        error=>{
+          this.navCtrl.setRoot("HomePage");
+        });
+    }else{
+      this.navCtrl.setRoot("HomePage");
     }
   }
 
