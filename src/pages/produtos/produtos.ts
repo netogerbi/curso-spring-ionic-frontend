@@ -4,13 +4,6 @@ import { ProdutoDTO } from '../../models/produto.dto';
 import { ProdutoService } from '../../services/domain/produto.service';
 import { API_CONFIG } from '../../config/api.config';
 
-/**
- * Generated class for the ProdutosPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
-
 @IonicPage()
 @Component({
   selector: 'page-produtos',
@@ -41,15 +34,14 @@ export class ProdutosPage {
       let item = this.items[i];
       this.produtoService.getSmallImageFromBucket(item.id)
         .subscribe(response =>{
-          console.log(response);
           item.imageUrl = `${API_CONFIG.bucketBaseUrl}/prod${item.id}-small.jpg`;
         },
         error => {});//se nao colocar o erro, o programa tenta carregar e para a aplicação pois nao consegue encontrar
     }
   }
 
-  showDetail(){
-    this.navCtrl.push("ProdutoDetailPage");
+  showDetail(produto_id: string){
+    this.navCtrl.push("ProdutoDetailPage",{produto_id:produto_id});
   }
 
 
