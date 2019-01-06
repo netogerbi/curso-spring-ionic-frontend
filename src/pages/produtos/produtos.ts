@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { ProdutoDTO } from '../../models/produto.dto';
 import { ProdutoService } from '../../services/domain/produto.service';
+import { API_CONFIG } from '../../config/api.config';
 
 /**
  * Generated class for the ProdutosPage page.
@@ -30,7 +31,22 @@ export class ProdutosPage {
     this.produtoService.findByCategoria(categoria_id)
       .subscribe(response => {
         this.items = response["content"];
+        this.loadImageUrls();
       },
       error => {});
   }
+
+  loadImageUrls(){
+    for(let i=0; i<this.items.length; i++){
+      let item = this.items[i];
+      this.produtoService.getSmallImageFromBucket(item.id)
+        .subscribe(response =>{
+          console.log(response);
+          item.imageUrl = `${API_CONFIG.bucketBaseUrl}/prod${item.id}-small.jpg`;
+        },
+        error => {});//se nao colocar o erro, o programa tenta carregar e para a aplicação pois nao consegue encontrar
+    }
+  }
+
+
 }
