@@ -1,4 +1,4 @@
-export class EstadoDTO{
+export interface EstadoDTO{
   id: string;
   nome: string;
 }

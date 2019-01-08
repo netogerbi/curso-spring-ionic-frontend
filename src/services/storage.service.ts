@@ -1,9 +1,10 @@
 import { STORAGE_KEYS } from "../config/storage_keys.config";
 import { LocalUser } from "../models/local_user";
+import { Cart } from "../models/cart";
 
 export class StorageService {
-    
-    getLocalUser(){
+
+    getLocalUser(): LocalUser{
         let usr = localStorage.getItem(STORAGE_KEYS.localUser);
         if(usr == null){
             return null;
@@ -20,5 +21,21 @@ export class StorageService {
         }
     }
 
-    
+    getCart(): Cart{
+      let str = localStorage.getItem(STORAGE_KEYS.cart);
+      if(str != null){
+        return JSON.parse(str);
+      }else{
+        return null;
+      }
+    }
+
+    setCart(obj : Cart) {
+      if (obj != null) {
+          localStorage.setItem(STORAGE_KEYS.cart, JSON.stringify(obj));
+      }
+      else {
+          localStorage.removeItem(STORAGE_KEYS.cart);
+      }
+    }
 }
