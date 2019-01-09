@@ -5,16 +5,18 @@
     </button>
     <ion-title>Categorias</ion-title>
   </ion-navbar>
+  <ion-fab bottom right edge>
+    <button navPush="CartPage" ion-fab mini><ion-icon name="cart"></ion-icon></button>
+  </ion-fab>
 </ion-header>
 
-
 <ion-content padding>
-    <ion-list>
-        <button ion-item *ngFor="let item of items" (click)="showProdutos(item.id)">
-          <ion-thumbnail item-start>
-            <img src="{{ bucketURL }}/cat{{ item.id }}.jpg">
-          </ion-thumbnail>
-          <h2>{{ item.nome }}</h2>
-      </button>
-    </ion-list>
+  <ion-list>
+    <button ion-item *ngFor="let item of items" (click)="showProdutos(item.id)">
+      <ion-thumbnail item-start>
+        <img src="{{ bucketURL }}/cat{{ item.id }}.jpg">
+      </ion-thumbnail>
+      <h2>{{ item.nome }}</h2>
+    </button>
+  </ion-list>
 </ion-content>
