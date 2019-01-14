@@ -26,7 +26,7 @@ export class ProfilePage {
     if(localUser && localUser.email){
       this.clienteService.findByEmail(localUser.email)
         .subscribe(response=>{
-          this.cliente = response;
+          this.cliente = response as ClienteDTO; //apesar do objeto vir com campos a mais, este casting informa que haverá os campos do DTO
           //procura imagem no bucket
           this.getImageIfExists();
         },

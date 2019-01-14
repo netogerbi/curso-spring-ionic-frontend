@@ -1,13 +1,9 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { EnderecoDTO } from '../../models/endereco.dto';
-
-/**
- * Generated class for the PickAdressPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import { StorageService } from '../../services/storage.service';
+import { ClienteService } from '../../services/domain/cliente.service';
+import { ClienteDTO } from '../../models/cliente.dto';
 
 @IonicPage()
 @Component({
@@ -18,42 +14,22 @@ export class PickAdressPage {
 
   items: EnderecoDTO[];
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
-  }
+  constructor(
+    public navCtrl: NavController,
+    public navParams: NavParams,
+    public storage: StorageService,
+    public clienteService: ClienteService
+    ) {}
 
   ionViewDidLoad() {
-    this.items = [{
-      id: "1",
-      logradouro: "Rua dos Operários",
-      numero: "709",
-      complemento: null,
-      bairro: "Bela Vista",
-      cep: "13840000",
-      cidade: {
-        id: "1",
-        nome: "Mogi Guaçu",
-        estado: {
-          id: "1",
-          nome: "São Paulo"
-        }
-      }
-    },
-    {
-      id: "2",
-      logradouro: "Rua dos Programadores",
-      numero: "1000",
-      complemento: null,
-      bairro: "Eldourado",
-      cep: "13840000",
-      cidade: {
-        id: "2",
-        nome: "Campinas",
-        estado: {
-          id: "1",
-          nome: "São Paulo"
-        }
-      }
-    }]
+    let localUser = this.storage.getLocalUser();
+    if(localUser && localUser.email){
+      this.clienteService.findByEmail(localUser.email)
+        .subscribe(response =>{
+          this.items = response["enderecos"];
+        },
+        error => {});
+    }
   }
 
 }
