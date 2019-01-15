@@ -6,6 +6,7 @@ import { ClienteService } from '../../services/domain/cliente.service';
 import { PedidoDTO } from '../../models/pedido.dto';
 import { HomePage } from '../home/home';
 import { CartService } from '../../services/domain/cart-service';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @IonicPage()
 @Component({
@@ -54,7 +55,7 @@ export class PickAdressPage {
 
   nextPage(item: EnderecoDTO) {
     this.pedido.enderecoDeEntrega = {id: item.id};
-    console.log(this.pedido);
+    this.navCtrl.push("PaymentPage",{pedido: this.pedido});
   }
 
 
