@@ -1,3 +1,3 @@
-export class RefDTO{
+export interface RefDTO{
   id: string;
 }
