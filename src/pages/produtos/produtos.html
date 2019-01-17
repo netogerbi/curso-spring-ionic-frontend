@@ -11,6 +11,13 @@
 </ion-header>
 
 <ion-content padding>
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="arrow-dropdown"
+      refreshingSpinner="circles"
+      refreshingText="Atualizando...">
+    </ion-refresher-content>
+  </ion-refresher>
   <ion-list>
     <button ion-item *ngFor="let item of items" (click)="showDetail(item.id)">
       <ion-thumbnail item-start>
