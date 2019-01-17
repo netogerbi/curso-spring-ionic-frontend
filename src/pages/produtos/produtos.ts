@@ -11,7 +11,9 @@ import { API_CONFIG } from '../../config/api.config';
 })
 export class ProdutosPage {
 
-  items: ProdutoDTO[];
+  items: ProdutoDTO[] = []; //inicia uma lista do tipo ProdutoDTO vazia
+
+  page: number = 0;
 
   constructor(
     public navCtrl: NavController,
@@ -27,19 +29,21 @@ export class ProdutosPage {
   loadData(){
     let categoria_id = this.navParams.get("categoria_id"); //pegando parametros da navegação
     let loader = this.presentLoader();
-    this.produtoService.findByCategoria(categoria_id)
+    this.produtoService.findByCategoria(categoria_id, this.page, 10) //chama a partir da pagina que esta com 10 produtos em cada pagina
       .subscribe(response => {
-        this.items = response["content"];
+        let start = this.items.length;
+        this.items = this.items.concat( response["content"] ); //concatena com alista vazia
+        let end = this.items.length-1;
         loader.dismiss();
-        this.loadImageUrls();
+        this.loadImageUrls(start, end);
       },
       error => {
         loader.dismiss();
       });
   }
 
-  loadImageUrls(){
-    for(let i=0; i<this.items.length; i++){
+  loadImageUrls(start: number, end: number){
+    for(let i=start; i <= end; i++){
       let item = this.items[i];
       this.produtoService.getSmallImageFromBucket(item.id)
         .subscribe(response =>{
@@ -62,11 +66,20 @@ export class ProdutosPage {
   }
 
   doRefresh(refresher) {
+    this.page=0;
+    this.items = [];
     this.loadData();
     setTimeout(() => {
       refresher.complete();
     }, 1000);
   }
 
+  doInfinite(infiniteScroll) {
+    this.page++; //incrementa a pagina
+    this.loadData(); //chama o carregamento de dados na próxima pagina
+    setTimeout(() => {
+      infiniteScroll.complete();
+    }, 1000);
+  }
 
 }
