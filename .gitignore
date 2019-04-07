@@ -30,6 +30,13 @@ plugins/ios.json
 www/
 $RECYCLE.BIN/
 
+
+
 .DS_Store
 Thumbs.db
 UserInterfaceState.xcuserstate
+
+# personal inserts
+
+my-release-key.keystore
+signer.txt

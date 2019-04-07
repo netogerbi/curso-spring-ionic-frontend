@@ -5,6 +5,7 @@ import { ClienteDTO } from '../../models/cliente.dto';
 import { ClienteService } from '../../services/domain/cliente.service';
 import { API_CONFIG } from '../../config/api.config';
 import { Camera, CameraOptions } from '@ionic-native/camera';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @IonicPage()
 @Component({
@@ -16,14 +17,19 @@ export class ProfilePage {
   cliente: ClienteDTO;
   picture: string;
   cameraOn: boolean = false;
+  profileImg: any;
 
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
     public storage: StorageService,
     public clienteService: ClienteService,
-    private camera: Camera) {
-  }
+    private camera: Camera,
+    private sanitizer: DomSanitizer) {
+      
+      this.profileImg = 'assets/img/avatar-blank.png';
+  
+    }
 
   ionViewDidLoad() {
     this.loadData();
@@ -47,16 +53,31 @@ export class ProfilePage {
       this.navCtrl.setRoot("HomePage");
     }
   }
+
   getImageIfExists() {
     this.clienteService.getImageFromBucket(this.cliente.id)
       .subscribe(response => {
         this.cliente.imageUrl = `${API_CONFIG.bucketBaseUrl}/cp${this.cliente.id}.jpg`;
+        this.blobToDataUrl(response).then(dataUrl => {
+          let str = dataUrl as string; //correção - convertendo url para base64 img
+          this.profileImg = this.sanitizer.bypassSecurityTrustHtml(str);
+        })
       },
-      error => { });
+      error => {
+        this.profileImg = 'assets/img/avatar-blank.png';
+      });
+  }
+
+  blobToDataUrl(blob) {
+    return new Promise((resolve, reject) => {
+      let reader = new FileReader();
+      reader.onerror = reject;
+      reader.onload = (e) => resolve(reader.result);
+      reader.readAsDataURL(blob);
+    });
   }
 
   getCameraPicture() {
-
     this.cameraOn = true;
 
     const options: CameraOptions = {
@@ -70,6 +91,7 @@ export class ProfilePage {
      this.picture = 'data:image/png;base64,' + imageData;
      this.cameraOn = false;
     }, (err) => {
+      this.cameraOn = false; // reativa botão da camera em casio de cancelamento
     });
   }
 
@@ -89,6 +111,7 @@ export class ProfilePage {
      this.picture = 'data:image/png;base64,' + imageData;
      this.cameraOn = false;
     }, (err) => {
+      this.cameraOn = false; // reativa botão da camera em casio de cancelamento
     });
   }
 
@@ -96,7 +119,7 @@ export class ProfilePage {
     this.clienteService.uploadPictrue(this.picture)
       .subscribe(response => {
         this.picture = null;
-        this.loadData();
+        this.getImageIfExists();
       }, error => {
       });
   }
